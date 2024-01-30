@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>Edit Product</title>
+</head>
+<body>
+    <div class="container">
+        <h2>Edit Product</h2>
+        <form id="product-form" method="POST">
+
+            <!-- Fields to query the item -->
+            <div class="query-section">
+                <label for="productId">Product ID:</label><br>
+                <input type="text" id="productId" name="id" placeholder="123abc" oninput="checkInput('name')"><br>
+
+                <label for="productName">Product Name:</label><br>
+                <input type="text" id="productName" name="name" placeholder="Product Name" oninput="checkInput('id')"><br>
+            </div>
+
+            <hr> <!-- Separator -->
+
+            <!-- Fields for new product details -->
+            <div class="edit-section">
+                <label for="newName">New Name:</label><br>
+                <input type="text" id="newName" name="newName" placeholder="New Product Name"><br>
+
+                <label for="description">Description:</label><br>
+                <textarea id="description" name="description" placeholder="Product Description"></textarea><br>
+
+                <label for="category">Category:</label><br>
+                <input type="text" id="category" name="category" placeholder="Category"><br>
+
+                <label for="price">Price:</label><br>
+                <input type="number" id="price" name="price" placeholder="Price"><br>
+            </div>
+
+            <input type="submit" value="Confirm">
+        </form>
+    </div>
+
+    <script>
+        function checkInput(otherField) {
+            if (document.getElementById('productId').value) {
+                document.getElementById('productName').disabled = true;
+            } else if (document.getElementById('productName').value) {
+                document.getElementById('productId').disabled = true;
+            } else {
+                document.getElementById(otherField).disabled = false;
+            }
+        }
+
+        document.getElementById('product-form').onsubmit = function(event) {
+            event.preventDefault();
+            const productId = document.getElementById('productId').value;
+            const productName = document.getElementById('productName').value;
+            let actionUrl = 'https://aesthetic-eclair-56d00c.netlify.app/.netlify/functions/api/edit_product';
+
+            if (productId) {
+                actionUrl += '?id=' + productId;
+            } else if (productName) {
+                actionUrl += '?name=' + encodeURIComponent(productName);
+            }
+
+            this.action = actionUrl;
+            this.submit();
+        };
+    </script>
+</body>
+</html>
