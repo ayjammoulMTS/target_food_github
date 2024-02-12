@@ -23,8 +23,30 @@
       <input type="file" id="image" name="image">
 
       <input type="submit" value="Add Product">
+
+      <div>
+        <label>Current Product Count:</label>
+        <span id="productCount">Loading...</span>
+    </div>
+
     </form>
   </div>
+
+  <script>
+    // Function to fetch the counter and update the page
+    function fetchCounter() {
+        fetch("https://aesthetic-eclair-56d00c.netlify.app/.netlify/functions/api/get_counter") // Update this URL to where your API is hosted
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('productCount').textContent = data.count;
+            })
+            .catch(error => console.error('Error fetching counter:', error));
+    }
+
+    // Call fetchCounter when the page loads
+    window.onload = fetchCounter;
+</script>
+  
 </body>
 </html>
 <!-- action="http://localhost:3000/add_product" method="POST" enctype="multipart/form-data" -->
