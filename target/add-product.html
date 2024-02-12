@@ -2,6 +2,23 @@
 <html>
 <head>
   <link rel="stylesheet" type="text/css" href="style.css">
+  <style>
+    /* Simple spinner styling */
+    .spinner {
+      display: none;
+      border: 4px solid rgba(0, 0, 0, .1);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border-left-color: #09f;
+      animation: spin 1s ease infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -17,36 +34,56 @@
       <input type="text" id="category" name="category">
 
       <label for="price">Price:</label>
-      <input type="double" id="price" name="price">
+      <input type="number" id="price" name="price"> <!-- Changed type to "number" for correct validation -->
 
       <label for="image">Image:</label>
       <input type="file" id="image" name="image">
 
-      <input type="submit" value="Add Product">
+      <!-- Updated submit button -->
+      <button type="submit" id="submit-btn">Add Product</button>
+
+      <!-- Spinner -->
+      <div id="spinner" class="spinner"></div>
 
       <div>
         <label>Current Product Count:</label>
         <span id="productCount">Loading...</span>
-    </div>
-
+      </div>
     </form>
   </div>
 
   <script>
-    // Function to fetch the counter and update the page
-    function fetchCounter() {
-        fetch("https://aesthetic-eclair-56d00c.netlify.app/.netlify/functions/api/get_counter") // Update this URL to where your API is hosted
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('productCount').textContent = data.count;
-            })
-            .catch(error => console.error('Error fetching counter:', error));
-    }
+    document.getElementById('product-form').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent default form submission
 
-    // Call fetchCounter when the page loads
-    window.onload = fetchCounter;
-</script>
-  
+      const submitBtn = document.getElementById('submit-btn');
+      const spinner = document.getElementById('spinner');
+      submitBtn.disabled = true; // Disable the button to prevent multiple submissions
+      spinner.style.display = 'block'; // Show spinner
+
+      const formData = new FormData(this);
+      const actionUrl = this.action; // Use form's action URL
+
+      fetch(actionUrl, {
+        method: 'POST',
+        body: formData,
+      })
+      .then(response => {
+        if (response.ok) {
+          window.location.reload(); // Refresh the page on success
+        } else {
+          throw new Error('Failed to submit form');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Submission failed. Please try again.');
+        submitBtn.disabled = false; // Re-enable submit button on failure
+        spinner.style.display = 'none'; // Hide spinner
+      });
+    });
+
+    window.onload = fetchCounter; // Existing fetchCounter function call
+  </script>
 </body>
 </html>
-<!-- action="http://localhost:3000/add_product" method="POST" enctype="multipart/form-data" -->
