@@ -65,7 +65,7 @@
     }
 
     function fetchTotalProductsCount() {
-      fetch("https://yourdomain.com/products/count") // Update this URL to your actual endpoint
+      fetch("https://aesthetic-eclair-56d00c.netlify.app/.netlify/functions/api/products/count") // Update this URL to your actual endpoint
         .then(response => response.json())
         .then(data => {
           document.getElementById('totalProductsCount').textContent = data.count;
