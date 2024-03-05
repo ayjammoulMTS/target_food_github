@@ -23,7 +23,7 @@
             <!-- Fields for new product details -->
             <div class="edit-section">
                 <label for="newName">New Name:</label><br>
-                <input type="text" id="newName" name="newName" placeholder="New Product Name"><br>
+                <input type="text" id="name" name="name" placeholder="New Product Name"><br>
 
                 <label for="description">Description:</label><br>
                 <textarea id="description" name="description" placeholder="Product Description"></textarea><br>
@@ -33,6 +33,10 @@
 
                 <label for="price">Price:</label><br>
                 <input type="number" id="price" name="price" placeholder="Price"><br>
+
+                <label for="image">Product Image:</label><br>
+                <input type="file" id="image" name="image"><br>
+                <br>
             </div>
 
             <input type="submit" value="Confirm">
@@ -49,22 +53,45 @@
                 document.getElementById(otherField).disabled = false;
             }
         }
-
-        document.getElementById('product-form').onsubmit = function(event) {
+        
+        document.getElementById('product-form').onsubmit = async function(event) {
             event.preventDefault();
+            const formData = new FormData(this);
             const productId = document.getElementById('productId').value;
             const productName = document.getElementById('productName').value;
             let actionUrl = 'https://aesthetic-eclair-56d00c.netlify.app/.netlify/functions/api/edit_product';
-
+        
             if (productId) {
                 actionUrl += '?id=' + productId;
             } else if (productName) {
                 actionUrl += '?name=' + encodeURIComponent(productName);
             }
-
-            this.action = actionUrl;
-            this.submit();
+        
+            // Use Fetch API to submit the form data
+            try {
+                const response = await fetch(actionUrl, {
+                    method: 'POST',
+                    body: formData, // For file uploads and other form data
+                    // If you're sending JSON data instead of FormData, use:
+                    // headers: { 'Content-Type': 'application/json' },
+                    // body: JSON.stringify(Object.fromEntries(formData)),
+                });
+        
+                if (!response.ok) throw new Error('Network response was not ok.');
+        
+                // Handle success
+                // You might want to redirect the user or display a success message
+                alert('Product updated successfully!');
+                // Optionally, redirect or clear the form
+                // location.href = 'success-page.html'; // Redirect to another page
+                // this.reset(); // Clear the form
+        
+            } catch (error) {
+                // Handle failure
+                console.error('Error:', error);
+                alert('Failed to update the product. Please try again.');
+            }
         };
-    </script>
+        </script>
 </body>
 </html>
