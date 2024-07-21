@@ -31,8 +31,11 @@
                 <label for="category">Category:</label><br>
                 <input type="text" id="category" name="category" placeholder="Category"><br>
 
+                <label for="subcategory">Subcategory:</label><br>
+                <input type="text" id="subcategory" name="subcategory" placeholder="Subcategory"><br>
+
                 <label for="price">Price:</label><br>
-                <input type="number" id="price" name="price" placeholder="Price"><br>
+                <input type="number" id="price" name="price" placeholder="Price" step="0.01"><br>
 
                 <label for="image">Product Image:</label><br>
                 <input type="file" id="image" name="image"><br>
@@ -67,33 +70,25 @@
                 actionUrl += '?name=' + encodeURIComponent(productName);
             }
         
-            // Use Fetch API to submit the form data
             try {
                 const response = await fetch(actionUrl, {
                     method: 'POST',
-                    body: formData, // For file uploads and other form data
-                    // If you're sending JSON data instead of FormData, use:
-                    // headers: { 'Content-Type': 'application/json' },
-                    // body: JSON.stringify(Object.fromEntries(formData)),
+                    body: formData,
                 });
         
                 if (!response.ok) throw new Error('Network response was not ok.');
         
-                // Handle success
-                // You might want to redirect the user or display a success message
+                const result = await response.json();
+                console.log('Success:', result);
                 alert('Product updated successfully!');
                 window.location.reload();
-                // Optionally, redirect or clear the form
-                // location.href = 'success-page.html'; // Redirect to another page
-                // this.reset(); // Clear the form
         
             } catch (error) {
-                // Handle failure
                 console.error('Error:', error);
                 alert('Failed to update the product. Please try again.');
                 window.location.reload();
             }
         };
-        </script>
+    </script>
 </body>
 </html>
